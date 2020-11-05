@@ -1,0 +1,110 @@
+<%= render partial: "question/header" %>
+<script>
+  $(document).ready(function(){
+      $.ajaxSetup({
+          headers: {
+              'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+          }
+      });
+    $(".tab-header").click(function(event){
+        method_mapper = {"questions-tab":"questions",
+                          "answers-tab": "answers",
+                          "followers-tab": "followers",
+                          "following-tab": "following"};
+        $.ajax({
+            "url": "<%= @user.id %>/"+method_mapper[event.currentTarget.id],
+            "method": "get",
+            success: function (result) {
+                if(event.currentTarget.id) {
+                    $(".active").removeClass("active");
+                    $("#" + event.currentTarget.id).addClass("active");
+                    if (event.currentTarget.id == "followers-tab" || "<%= @is_follow %>" != "self")
+                        $(".glyphicon-remove").remove();
+                }
+            }
+        });
+    });
+    <% if @is_follow == "self" %>
+      $(".my-image").mouseenter(function (){
+          $("#profile-image-edit").css("display", "block");
+          $(".my-image").css("opacity", "30%");
+      });
+      $(".my-image").mouseleave(function (){
+          $("#profile-image-edit").css("display", "none");
+          $(".my-image").css("opacity", "100%");
+      });
+      $(".my-image").click(function(){
+         $("#profile-image-edit").trigger("click");
+      });
+      $("#profile-image-edit").change(function (){
+      });
+      $("#profile-image-edit-input").change(function (){
+      });
+    <% end %>
+    $("#follow-btn").click(function (event){
+        var is_following = event.currentTarget.getAttribute("following");
+        var action_mapper = {"true": "unfollow", "false": "follow"};
+        $.ajax({
+            "url": 'update_following',
+            method: "post",
+            "data": {"user_id": "<%= session[:user]["id"] %>", "follow_user_id": "<%= @user.id %>", "user_action": action_mapper[is_following]},
+            success: function (result) {
+                if (is_following === "true") {
+                    $("#follow-btn").text("Follow");
+                    event.currentTarget.setAttribute("following", "false");
+                }else {
+                    $("#follow-btn").text("Following");
+                    event.currentTarget.setAttribute("following", "true");
+                }
+            }
+        });
+    });
+    $("#questions-tab").trigger("click");
+
+  });
+</script>
+<div id="content">
+  <div class="rowl" id="content_table">
+    <div class="col-sm-2 area"></div>
+    <div class="col-sm-8 area">
+      <div class="row" style="position:relative; margin-top: 20px; margin-bottom: 20px;">
+        <div class="col-sm-3">
+            <% if @user.image_id %>
+              <%= image_tag @user.image_id , id: "profile-image", class: "profile-image my-image"%>
+            <%else %>
+              <%= image_tag "no-picture.jpg" , id: "profile-image", class: "profile-image  my-image"%>
+            <% end %>
+          <label id="profile-image-edit" class="custom-file-upload glyphicon glyphicon-pencil" style="display: none">
+            <input id = "profile-image-edit-input" type="file" style="display: none"/>
+          </label>
+          </div>
+        <div class="col-sm-8">
+          <div class="row"></div>
+            <div class="profile-usr-info" style="font-size: 70px; position: relative; top: 70px;">
+                <p><%= @user.first_name.titleize %> <%=@user.last_name.titleize %> </p>
+              </div>
+        </div>
+        </div>
+      <% if @is_follow != "self" %>
+        <button id="follow-btn" following="<%= @is_follow %>" type="button" class="btn btn-primary" style="left: 5%; position: relative;">Follow<% if @is_follow == "true" %>ing<% end %>
+        </button>
+      <% else %>
+
+    <% end %>
+
+      <hr size="20px" color="white">
+        <div class="row">
+          <div class="topnav">
+            <a id="questions-tab" class="active tab-header"><% if @is_follow == "self" %>My <% end %>Questions</a>
+            <a id="answers-tab" class="tab-header"><% if @is_follow == "self" %>My <% end %>Answers</a>
+            <a id= "followers-tab" class="tab-header">Followers</a>
+            <a id="following-tab" class="tab-header">Following</a>
+          </div>
+        </div>
+        <div class="row nav-section">
+
+        </div>
+    </div>
+    <div class="col-sm-2 area"></div>
+  </div>
+</div>

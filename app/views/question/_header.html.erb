@@ -1,0 +1,38 @@
+<div id="header">
+  <div class="row" style="position: relative; height: 100%; width: 100%;">
+  <div class="col-sm-2">
+
+  </div>
+    <div class="home col-sm-8" style="font-size: 40px;">
+      Dora
+    </div>
+    <div class="col-sm-2">
+      <%if not session[:user].nil? %>
+        Welcome, <%= session[:user]["first_name"].titleize %>
+      <div class="btn bg-transparent dropdown-toggle" type="button" style="position: relative; height: 100%; width: 27%; padding: 8px;" data-toggle="dropdown">
+        <% if session[:user]["image_id"] %>
+          <%= image_tag session[:user]["image_id"] , id: "profile-image", class: "profile-image"%>
+        <%else %>
+          <%= image_tag "no-picture.jpg" , id: "profile-image", class: "profile-image"%>
+        <% end %>
+      </div>
+
+      <ul class="dropdown-menu">
+      <li><a href="http://127.0.0.1:3000/profile/<%= session[:user]["id"] %>">My Profile</a></li>
+      <li><a href="http://127.0.0.1:3000/login/logout">Logout</a></li>
+    </ul>
+        <% end %>
+    </div>
+  </button>
+
+  </div>
+</div>
+</div>
+
+<script>
+  $(document).ready(function (){
+      $(".home").click(function (){
+          window.location.pathname = "question/list"
+      });
+  });
+</script>

@@ -1,0 +1,25 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  p_id: 1
+  user_id: 1
+  content: MyText
+  category: MyString
+  like_count: 1
+  dislike_count: 1
+  reply_count: 1
+  parent_id: 1
+  created_at: 2020-11-03 17:29:38
+  modified_at: 2020-11-03 17:29:38
+
+two:
+  p_id: 1
+  user_id: 1
+  content: MyText
+  category: MyString
+  like_count: 1
+  dislike_count: 1
+  reply_count: 1
+  parent_id: 1
+  created_at: 2020-11-03 17:29:38
+  modified_at: 2020-11-03 17:29:38
