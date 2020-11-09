@@ -16,10 +16,27 @@
         <a href="http://127.0.0.1:3000/profile/<%=c.user.user_id %>">
         <b><%= c.user.first_name.titleize %> <%=c.user.last_name.titleize %> </b>
         </a>
+        <%if not c.modified_at.blank?%>
+          <i style="font-size: 13px; color:gray">(Edited)</i>
+        <% end %>
       </div>
       <div class="row">
         <%= c.created_at.strftime("%d %b") %>
       </div>
     </div>
   </div>
+  <div class="col-sm-1">
+    <% if session[:user]["id"] == c.user.id %>
+    <div class="dropdown">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        :
+      </button>
+      <ul class="dropdown-menu">
+        <li><a id="edit-<%=c.id %>" p-id="<%=c.id %>" parent-id="<%=c.parent_id %>" class="edit-post">Edit</a></li>
+        <li><a id="delete-<%=c.id %>" p-id="<%=c.id %>" parent-id="<%=c.parent_id %>" class="delete-post" >Delete</a></li>
+      </ul>
+    </div>
+  <% end %>
+  </div>
 </div>
+

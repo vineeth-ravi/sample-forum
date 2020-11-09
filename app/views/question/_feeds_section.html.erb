@@ -11,13 +11,13 @@
 <% else %>
   Your feeds for the day
   <% @questions.each do |c| %>
-    <div class="panel panel-default row t_box question">
+    <div class="panel panel-default row t_box question" id="t_box-<%=c.id %>">
       <div class="panel-body">
         <div class="t_user">
           <%= render partial: "question/userinfo" ,locals: {c: c} %>
         </div>
         <hr>
-        <div class="t_content">
+        <div class="t_content" id="t_content-<%= c.id %>">
           <b><%= c.content %></b>
         </div>
         <div class="user-actions">

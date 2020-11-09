@@ -19,15 +19,37 @@ class QuestionController < ApplicationController
     params.require(:post).permit(:content)
   end
 
-  def edit
-
-  end
-
   def update
-
+    puts params
+    id = params[:id]
+    content = params[:content]
+    post = Post.find(id)
+    if post.user_id.to_i == session[:user]["id"].to_i and post.content != content
+      post.content = content
+      post.modified_at = DateTime.now
+      post.save
+      render :json => {status: "success"}
+    end
   end
 
   def delete
+    post_id = params[:id]
+    puts post_id
+    post = Post.find(post_id)
+    if session[:user]["id"].to_i == post.user_id.to_i
+      if post.category=="comment"
+        parent = Post.find(post.parent_id)
+        parent.reply_count -= 1
+        parent.save
+      else
+        parent_question = Post.where(parent_id: post_id)
+        parent_question.delete_all
+      end
+      post.delete
+      render :json => {status: "success"}
+    else
+      render :json => {status: "failure"}
+    end
   end
 
   def list

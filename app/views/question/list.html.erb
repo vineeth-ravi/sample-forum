@@ -79,6 +79,43 @@
            }
        });
     });
+
+      $(".edit-post").click(function (event){
+          var p_id = event.target.getAttribute("p-id");
+          var content = $("#t_content-"+p_id).children().text();
+          $("#t_content-"+p_id).children().remove();
+          kk = '<textarea id="edit-content'+p_id+'" class="post_content">'+content+'</textarea><button class="edit-save" id=p_id>Save</button><button class="edit-discard">Discard</button>'
+          $("#t_content-"+p_id).append(kk);
+
+          $(".edit-save").click(function (){
+              var new_content = $("#edit-content"+p_id).val();
+              $.ajax({
+                 url: "update",
+                 method: "post",
+                 data: {"id": p_id, "content": new_content},
+                 success: function (response){
+                     $("#t_content-"+p_id).children().remove();
+                     $("#t_content-"+p_id).append('<b>'+new_content+'</b>');
+                 }
+              });
+          });
+
+      });
+      $(".delete-post").click(function (event){
+          var p_id = event.target.getAttribute("p-id");
+          $.ajax({
+             url: p_id+"/delete",
+             method: "delete",
+             success: function (response){
+                 if (response["status"] == "success")
+                    $("#t_box-"+p_id).remove();
+             }
+          });
+      });
+
+
+
+
   });
 </script>
 </head>

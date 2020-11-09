@@ -162,7 +162,7 @@ body{
     left: 100px;
 }
 
-#post_content{
+#post_content, .post_content{
     width: 100%;
 }
 

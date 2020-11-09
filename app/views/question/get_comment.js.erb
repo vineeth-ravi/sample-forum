@@ -1,7 +1,7 @@
 if ("<%= @comment_list.length %>" > "0") {
     var p_id = "<%= @post_id %>";
     <% @comment_list.each do |comment| %>
-    html = "<div class='panel-body loaded-comment"+p_id+"'><div class='t_user'><%= escape_javascript render partial: 'userinfo' ,locals: {c: comment} %></div><hr><div class='t_content'><b>" + "<%= comment.content %>" + "</b></div><div class='user-actions'><div><hr>" +
+    html = "<div class='panel-body loaded-comment"+p_id+"' id='t_box-<%=comment.id %>'><div class='t_user'><%= escape_javascript render partial: 'userinfo' ,locals: {c: comment} %></div><hr><div class='t_content' id='t_content-<%= comment.id %>'><b>" + "<%= comment.content %>" + "</b></div><div class='user-actions'><div><hr>" +
         "<span id='like-count-<%= comment.id %>'><%= comment.like_count %></span><span id='like-<%=comment.id %>' class='like glyphicon glyphicon-thumbs-up <% if not comment.user_actions.blank? %><% if comment.user_actions[0].action == 'like'%><%='selected'%><%end %><%end %>'> </span> <span id='dislike-count-<%= comment.id %>'><%= comment.dislike_count %></span><span id='dislike-<%=comment.id %>' class='dislike glyphicon glyphicon-thumbs-down <% if not comment.user_actions.blank? %><% if comment.user_actions[0].action == 'dislike'%><%='selected'%><% end %><%end %>'></span></div></div></div>";
     $("#cmt" + p_id).append(html);
     <% end %>
@@ -40,5 +40,42 @@ $(".dislike").click(function (event){
     $('#like-'+pid).removeClass("selected");
 
     post_action({user_id: <%= session[:user]["id"] %>, p_id: pid, user_action: "dislike"});
+});
+
+$(".delete-post").click(function (event){
+    var p_id = event.target.getAttribute("p-id");
+    var parent_id = event.target.getAttribute("parent-id");
+    $.ajax({
+        url: p_id+"/delete",
+        method: "delete",
+        success: function (response){
+            if (response["status"] == "success")
+                $("#t_box-"+p_id).remove();
+                $("#comment-count-"+parent_id).text(parseInt($("#comment-count-"+parent_id).text()) -1);
+        }
+    });
+});
+
+
+$(".edit-post").click(function (event){
+    var p_id = event.target.getAttribute("p-id");
+    var content = $("#t_content-"+p_id).children().text();
+    $("#t_content-"+p_id).children().remove();
+    kk = '<textarea id="edit-content'+p_id+'" class="post_content">'+content+'</textarea><button class="edit-save" id=p_id>Save</button><button class="edit-discard">Discard</button>'
+    $("#t_content-"+p_id).append(kk);
+
+    $(".edit-save").click(function (){
+        var new_content = $("#edit-content"+p_id).val();
+        $.ajax({
+            url: "update",
+            method: "post",
+            data: {"id": p_id, "content": new_content},
+            success: function (response){
+                $("#t_content-"+p_id).children().remove();
+                $("#t_content-"+p_id).append('<b>'+new_content+'</b>');
+            }
+        });
+    });
 
 });
+
