@@ -1,5 +1,6 @@
 class QuestionController < ApplicationController
   def create
+    # Creates a new post/question
     @post = Post.new(question)
     @post.like_count=0
     @post.dislike_count=0
@@ -12,7 +13,6 @@ class QuestionController < ApplicationController
     else
       render :action => "new"
     end
-
   end
 
   def question
@@ -32,12 +32,10 @@ class QuestionController < ApplicationController
 
   def list
     @questions = Post.includes(:user).includes(:user_actions).where("category='question'")
-    puts "formaaattt"
   end
 
   def download
     @questions = Post.includes(:user).includes(:user_actions).where("category='question'")
-    puts "formaaattt"
     respond_to do |format|
       format.html
       format.pdf do

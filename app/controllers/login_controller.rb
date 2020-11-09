@@ -1,8 +1,11 @@
 class LoginController < ApplicationController
   def get
+    # it renders the login page
   end
 
   def authenticate
+    # authenticate is used to authenticate - email & password match, the post request from login page
+    # It also stores the user information in the session
     user = params[:user]
     if not user.nil?
       user_info = User.where(email_id: user[:email_id], password: user[:password])
@@ -16,6 +19,7 @@ class LoginController < ApplicationController
   end
 
   def logout
+    # destroys the user info from the session
     if not session[:user].nil?
       session[:user] = nil
     end
@@ -23,6 +27,7 @@ class LoginController < ApplicationController
   end
 
   def signup
+    # Creates new user account
     user = User.new
     puts params
     user.first_name = params[:user][:first_name]

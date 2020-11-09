@@ -1,13 +1,14 @@
 class ProfilesController < ApplicationController
   def get_profile
+    # returns the following user information for the given profile/user id and renders the home page
+    #   1. user information of the requested profile - first name, last name
+    #   2. if currently logged in profile is same as requested profile - is_follow => self
+    #   3. if the active logged in profile follows the requested profile when the both are different profiles - is_follow => (true/false)
+    #   4. render profile.html template
     @current_user_id = session[:user]["id"]
     @user_id = params[:id]
     @user = User.find(@user_id)
     @is_follow = "false"
-    puts "hahaa"
-    puts @current_user_id
-    puts @user_id
-    puts @current_user_id.eql?@user_id
     if @current_user_id.to_i === @user_id.to_i
       @is_follow = "self"
     else
@@ -19,12 +20,14 @@ class ProfilesController < ApplicationController
     render "profile.html"
   end
   def get_questions_by_user
+    # returns the questions that were asked by the requested user
     @user_id = params[:id]
     @questions = Post.includes(:user).includes(:user_actions).where(category: "question", user_id: @user_id)
     render "myquestions.js"
   end
 
   def get_answers_by_user
+    # returns the questions where the requested user answered/commented atleast once.
     @user_id = params[:id]
     @comment_list = Post.select(:parent_id).where(user_id: @user_id, category: "comment").distinct
     @questions = []
@@ -35,6 +38,7 @@ class ProfilesController < ApplicationController
   end
 
   def get_following
+    # get profiles that the currently logged in user is following
     @user_id = params[:id]
     @following_list = UserFollowDetail.where(user_id: @user_id)
     @user_list = []
@@ -45,6 +49,7 @@ class ProfilesController < ApplicationController
   end
 
   def get_followers
+    # get profiles those were following the currently logged in user
     @user_id = params[:id]
     @follower_list = UserFollowDetail.where(following_user_id: @user_id)
     @user_list = []
@@ -55,6 +60,7 @@ class ProfilesController < ApplicationController
   end
 
   def update_following
+    #update the following details (follow/unfollow) by the currently logged in user to any other user/profile
     @action = params[:user_action]
     @user_id = params[:user_id]
     @following_user_id = params[:follow_user_id]
@@ -62,8 +68,6 @@ class ProfilesController < ApplicationController
       return
     end
     @follower_list = UserFollowDetail.where(user_id: @user_id, following_user_id: @following_user_id)
-    puts "cominggg"
-    puts @action
     if @action == "follow"
       if @follower_list.blank?
         @follower_detail = UserFollowDetail.new
@@ -72,11 +76,8 @@ class ProfilesController < ApplicationController
         @follower_detail.save
       end
     elsif @action == "unfollow"
-      puts "unfolloww"
       if @follower_list.one?
-        puts "going to deletee"
         @follower_list.first.delete
-        puts "deleteedddd"
       end
     end
   end
