@@ -1,0 +1,106 @@
+<head>
+<link rel="stylesheet" href="app/assets/stylesheets/list.css">
+<script>
+  $(document).ready(function (){
+      $.ajaxSetup({
+          headers: {
+              'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+          }
+      });
+
+      $(".reply").click(function (event){
+        var pid = event.currentTarget.id.split("-")[1]
+        var view_comments = event.currentTarget.getAttribute("view_comments")
+        if (view_comments === "on"){
+            if($(".loaded-comment"+pid).length === 0 ){
+                $.ajax({
+                    "url": "get_comments/" + pid,
+                    "method": "get",
+                    success: function (result) {
+                        console.log(result)
+                    }
+                });
+            }
+            $('#cmt'+pid).removeClass("hidden");
+            event.currentTarget.setAttribute("view_comments", "off")
+        }else if(view_comments === "off"){
+            $("#cmt"+pid).addClass("hidden");
+            event.currentTarget.setAttribute("view_comments", "on")
+        }
+
+    });
+    function post_action(data){
+        $.ajax({
+            "url": "post_action",
+            method: "post",
+            data: {"user_id": data.user_id, "p_id": data.p_id, user_action: data.user_action},
+            success: function (result){
+            }
+        });
+    }
+    $(".like").click(function (event){
+        var elem_id = event.currentTarget.id;
+        var pid = elem_id.split("-")[1];
+        if (!$('#like-'+pid).hasClass("selected"))
+            $("#like-count-"+pid).text(parseInt($("#like-count-"+pid).text())+parseInt(1));
+        $('#like-'+pid).addClass("selected");
+        if ($('#dislike-'+pid).hasClass("selected"))
+            $("#dislike-count-"+pid).text(parseInt($("#dislike-count-"+pid).text())-1);
+        $('#dislike-'+pid).removeClass("selected");
+        post_action({user_id: <%= session[:user]["id"] %>, p_id: pid, user_action: "like"});
+    });
+    $(".dislike").click(function (event){
+        var pid = event.currentTarget.id.split("-")[1];
+        if (!$('#dislike-'+pid).hasClass("selected"))
+            $("#dislike-count-"+pid).text(parseInt($("#dislike-count-"+pid).text())+parseInt(1));
+        $('#dislike-'+pid).addClass("selected");
+
+        if ($('#like-'+pid).hasClass("selected"))
+            $("#like-count-"+pid).text(parseInt($("#like-count-"+pid).text())-1);
+        $('#like-'+pid).removeClass("selected");
+
+        post_action({user_id: <%= session[:user]["id"] %>, p_id: pid, user_action: "dislike"});
+
+    });
+
+    $(".add-comment").click(function(event){
+        var pid = event.target.getAttribute("p-id");
+       $.ajax({
+           "url": "post_comment",
+           "method": "post",
+           "data": {"user_id": <%= session[:user]["id"] %>, "content": $("#comment_area"+pid).val(), "p-id": pid},
+           success: function (result){
+            console.log(result);
+            var comment = $("#comment_area"+pid).val();
+            var html = "<div class='loaded-comment"+pid+"'><div class='t_user'></div><hr><div class='t_content'><b>" + comment + "</b></div><div class='user-actions'><div><hr></div></div></div>";
+            $("#cmt" + pid).append(html);
+            $("#comment_area"+pid).val(null);
+            $("#comment-count-"+pid).text(parseInt($("#comment-count-"+pid).text())+1);
+           }
+       });
+    });
+  });
+</script>
+</head>
+
+<%= render partial: "header" %>
+<div id="content">
+  <div class="rowl" id="content_table">
+      <div class="col-sm-2 area"></div>
+      <div class="col-sm-8 area">
+        <div class="row collu">
+          <div class="col-sm-3 collu" id="profile-area">
+            <div class="collu">Hello World</div>
+          </div>
+          <div class="col-sm-6 collu" id="feeds-area">
+            <div id="feeds" class="collu">
+              <%= render partial: "newquestion" %>
+              <%= render partial: "feeds_section", locals: {questions: @questions} %>
+              </div>
+            </div>
+          <div class="col-sm-3 collu" id="stats-area"><div class="collu">Stats !</div></div>
+        </div>
+      </div>
+      <div class="col-sm-2 area"></div>
+    </div>
+</div>

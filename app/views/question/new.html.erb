@@ -1,0 +1,8 @@
+<h1>Post your Question</h1>
+
+<%= form_tag :action =>  "create" do %>
+<p><label> Question : </label><br></p>
+  <%= text_area "questions", "question" %>
+  <%= submit_tag "Create" %>
+<% end %>
+<%= link_to "Back", { :action=>"list"}%>

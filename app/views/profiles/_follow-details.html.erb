@@ -1,0 +1,34 @@
+<div id="follow-section" >
+  <% if not @user_list.blank? %>
+    <% @user_list.each do |user| %>
+    <div id="follow-<%=user.id %>" class="follow-card bg-light text-dark" >
+      <div class="follow-card-body">
+        <div class="col-sm-2 follow-profile-photo">
+          <% if user.image_id %>
+            <a href="http://127.0.0.1:3000/profile/<%= user.user_id %>">
+              <%= image_tag user.image_id , id: "profile-image", class: "profile-image-card", href:"www.google.com"%>
+            </a>
+          <%else %>
+            <a href="http://127.0.0.1:3000/profile/<%=user.user_id %>">
+              <%= image_tag "no-picture.jpg" , id: "profile-image", class: "profile-image-card"%>
+            </a>
+          <% end %>
+        </div>
+        <div class="col-sm-10 follow-usr-info">
+          <div class="row" style="position:relative;overflow: hidden; width: 100%; display: flex; white-space: nowrap">
+            <div class="col-sm-10" style="overflow: hidden">
+            <a href="http://127.0.0.1:3000/profile/<%=user.user_id %>">
+              <b><%= user.first_name.titleize %> <%=user.last_name.titleize %> </b>
+            </a>
+            </div>
+            <div class="col-sm-2">
+              <span f-id="<%=user.user_id %>" class="unfollow glyphicon glyphicon-remove"></span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+      <%end %>
+  <% end %>
+</div>

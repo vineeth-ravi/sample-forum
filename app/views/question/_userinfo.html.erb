@@ -1,0 +1,25 @@
+<div class="row">
+  <div class="col-sm-1">
+    <% if c.user.image_id %>
+      <a href="http://127.0.0.1:3000/profile/<%=c.user.user_id %>">
+      <%= image_tag c.user.image_id , id: "profile-image", class: "profile-image-card", href:"www.google.com"%>
+      </a>
+    <%else %>
+      <a href="http://127.0.0.1:3000/profile/<%=c.user.user_id %>">
+      <%= image_tag "no-picture.jpg" , id: "profile-image", class: "profile-image-card"%>
+      </a>
+    <% end %>
+  </div>
+  <div class="col-sm-9">
+    <div class="usr-info">
+      <div class="row">
+        <a href="http://127.0.0.1:3000/profile/<%=c.user.user_id %>">
+        <b><%= c.user.first_name.titleize %> <%=c.user.last_name.titleize %> </b>
+        </a>
+      </div>
+      <div class="row">
+        <%= c.created_at.strftime("%d %b") %>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,22 @@
+$("#feeds-section").remove();
+
+$(".nav-section").append("<%= escape_javascript render partial: "follow-details"%>");
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+    }
+});
+
+$(".unfollow").click(function (event){
+    var f_user_id = event.target.getAttribute("f-id");
+    var user_id = "<%=@user_id %>"
+    $.ajax({
+        "url": "update_following/",
+        "method": "post",
+        "data": {"user_id": user_id, "follow_user_id": f_user_id, "user_action": "unfollow"},
+        success: function (result) {
+            $("#follow-"+f_user_id).remove();
+
+        }
+    });
+});
