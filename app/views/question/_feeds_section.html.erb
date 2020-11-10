@@ -1,0 +1,54 @@
+<div id="feeds-section">
+<% if @questions.blank? %>
+  <div class="panel panel-default row t_box">
+    <div class="panel-body">
+      <div class="t_content">
+        <b>No Questions !
+        </b>
+      </div>
+    </div>
+  </div>
+<% else %>
+  Your feeds for the day
+  <% @questions.each do |c| %>
+    <div class="panel panel-default row t_box question" id="t_box-<%=c.id %>">
+      <div class="panel-body">
+        <div class="t_user">
+          <%= render partial: "question/userinfo" ,locals: {c: c} %>
+        </div>
+        <hr>
+        <div class="t_content" id="t_content-<%= c.id %>">
+          <b><%= c.content %></b>
+        </div>
+        <div class="user-actions">
+          <div>
+            <hr>
+            <span id="like-count-<%= c.id %>"><%= c.like_count %></span>
+            <span id="like-<%=c.id %>" class="like glyphicon glyphicon-thumbs-up<% if not c.user_actions.blank? %>
+                              <% if c.user_actions[0].action == "like"%>
+                                <%="selected"%>
+                              <%end %>
+                            <%end %>
+                            "></span>
+            <span id="dislike-count-<%= c.id %>"><%= c.dislike_count %></span>
+            <span id="dislike-<%=c.id %>" class="dislike glyphicon glyphicon-thumbs-down <% if not c.user_actions.blank? %>
+                              <% if c.user_actions[0].action == "dislike"%>
+                                <%="selected"%>
+                              <%end %>
+                              <%end %>
+                            "></span>
+            <span id="comment-count-<%= c.id %>"><%= c.reply_count %></span>
+            <span view_comments="on" id="comment-<%=c.id %>" class="reply glyphicon glyphicon-comment"></span>
+          </div>
+        </div>
+      </div>
+      <div id="cmt<%=c.id %>" class="comment hidden">
+        <div class="new-comment">
+          <textarea rows="1" style="width: 70%" id="comment_area<%= c.id %>" placeholder="Add your comments"></textarea>
+          <button class="add-comment" p-id="<%= c.id %>">Add Comment</button>
+        </div>
+      </div>
+    </div>
+  <% end %>
+<%end %>
+</div>

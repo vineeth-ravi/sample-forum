@@ -1,0 +1,16 @@
+<div id="post-question" class="panel panel-default row t_box">
+  <div class="panel-body">
+    <div class="t_user"></div>
+    <hr>
+    <h3>What's on your mind ?</h3>
+    <%= form_tag :action =>  "create" do %>
+      <div class="t_content">
+        <%= text_area "post", "content", placeholder: "Ask any Question"%>
+      </div>
+      <div class="user-actions">
+        <hr>
+        <%= submit_tag "Post Question" %>
+    <% end %>
+    </div>
+  </div>
+</div>
